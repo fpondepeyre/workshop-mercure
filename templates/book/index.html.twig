@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    <style type="text/css">
+        #books {
+            border: solid 1px #000;
+            padding: 20px;
+        }
+        article {
+            padding: 10px;
+            border: solid 1px;
+            margin-bottom: 5px;
+        }
+        article#nobooks {
+            background-color: lavenderblush;
+            border-color: red;
+        }
+        article.book {
+            background-color: #c3edd2;
+            border-color: #1a1;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <h1>Books</h1>
+
+    <p>
+        Here we may have a list of books that will appear in green.
+        A red message can appear if there are no books in the database.
+
+        The events that can occur here:
+    </p>
+
+    <ul>
+        <li>If you create one book from the API, the <code>App\EventSubscriber\BookUpdateListenerSubscriber</code> event listener will automatically publish a message to Mercure, and this page will receive the message.</li>
+        <li>When receiving a message that is related to a Book object, the EventSource will add it dynamically in the DOM.</li>
+        <li>If there were no books, the message in the red box will change.</li>
+    </ul>
+
+    <p>More things you could do with Javascript:</p>
+
+    <ul>
+        <li>When a book is updated, update the associated &lt;article&gt; tag with the new data, changing its color to notify the user that the post was just updated.</li>
+        <li>When a book is deleted, change its color to red to notify the user that the book has been deleted, and add a warning message to prevent the user to access to it, for instance.</li>
+    </ul>
+
+    <div id="books">
+        {% for book in books %}
+            <article class="book">
+                <h2>{{ book.title }}</h2>
+            </article>
+        {% else %}
+            <article id="nobooks">
+                <p>
+                    No books yet.<br>
+                    Here's a command to create one:
+                </p>
+                <pre>curl -X POST "{{ url('api_books_post_collection') }}" -H "accept: application/json" -H "Content-Type: application/json" -d "{\"title\": \"Ubik, by Philip K. Dick\"}"</pre>
+            </article>
+        {% endfor %}
+    </div>
+{% endblock %}
